@@ -7,12 +7,12 @@ var index = 1
 var css = ''
 var widthArr = []
 var width = 1920
-var x = [0]
+/* var x = [0]
 var y = [0]
 var xposition = 0
 var yposition = 0
 var xValue = 0
-var yValue = 0
+var yValue = 0 */
 
 axios
   .get('https://api.figma.com/v1/files/DF6yeqypHUu3cSGeupWzVx', {
@@ -35,11 +35,35 @@ const changeName = (a, itemPath) => {
       a.children.map((item, id) => {
         if (id == 0) {
           position.push(index)
-          x.push(xposition)
-          y.push(yposition)
+          /*           x.push(xposition)
+          y.push(yposition) */
           widthArr.push(width)
         }
+        if (
+          item.absoluteBoundingBox != null &&
+          item.absoluteBoundingBox != undefined
+        ) {
+          width = item.absoluteBoundingBox.width
+          css += `#${name}{\n`
+          css += `width:${(width * 100) / widthArr[widthArr.length - 1]}%;\n`
+          css += `height:${item.absoluteBoundingBox.height}px;\n`
+          css += `position:absolute;\n`
+          css += `left:${item.absoluteBoundingBox.x}px;\n`
+          css += `top:${item.absoluteBoundingBox.y}px;\n`
+          css += '}\n\n'
+        } else {
+          css += `#${name}{\n`
+          css += `width:100%;\n`
+          css += `position:relative;\n`
+          //css += `left:${item.absoluteBoundingBox.x + 500}px;\n`
+          //css += `top:${item.absoluteBoundingBox.y}px;\n`
+          css += '}\n\n'
+        }
 
+        /*  if (item.absoluteBoundingBox != undefined) {
+          xposition = item.absoluteBoundingBox.x
+          yposition = item.absoluteBoundingBox.y
+        } */
         index = id + 1
 
         var path = ''
@@ -51,60 +75,31 @@ const changeName = (a, itemPath) => {
           }
         }
         path = path + '-' + index
-
-        if (
-          item.absoluteBoundingBox != null &&
-          item.absoluteBoundingBox != undefined
-        ) {
-          width = item.absoluteBoundingBox.width
-          xposition = item.absoluteBoundingBox.x
-          yposition = item.absoluteBoundingBox.y
-          css += `#${
-            item.name.replace(/\s+/g, '-').toLowerCase() + '-' + path
-          }{\n`
-          css += `width:${(width * 100) / widthArr[widthArr.length - 1]}%;\n`
-          css += `height:${item.absoluteBoundingBox.height}px;\n`
-          css += `position:absolute;\n`
-          css += `left:${
-            ((xposition - x[x.length - 1]) * 100) /
-            widthArr[widthArr.length - 1]
-          }%;\n`
-          css += `top:${yposition - y[y.length - 1]}px;\n`
-          css += '}\n\n'
-        } else {
-          css += `#${
-            item.name.replace(/\s+/g, '-').toLowerCase() + '-' + path
-          }{\n`
-          css += `width:100%;\n`
-          css += `position:absolute;\n`
-          css += '}\n\n'
-        }
-
         changeName(item, path)
       })
       position.pop()
       widthArr.pop()
+      /*   xValue = x[x.length - 1]
       x.pop()
-      y.pop()
+      yValue = x[y.length - 1]
+      y.pop() */
     }
   } else {
     if (a.absoluteBoundingBox != null && a.absoluteBoundingBox != undefined) {
       width = a.absoluteBoundingBox.width
-      xposition = a.absoluteBoundingBox.x
-      yposition = a.absoluteBoundingBox.y
       css += `#${name}{\n`
       css += `width:${(width * 100) / widthArr[widthArr.length - 1]}%;\n`
       css += `height:${a.absoluteBoundingBox.height}px;\n`
-      css += `position:absolute;\n`
-      css += `left:${
-        ((xposition - x[x.length - 1]) * 100) / widthArr[widthArr.length - 1]
-      }%;\n`
-      css += `top:${yposition - y[y.length - 1]}px;\n`
+      css += `position:relative;\n`
+      css += `left:${a.absoluteBoundingBox.x}px;\n`
+      css += `top:${a.absoluteBoundingBox.y}px;\n`
       css += '}\n\n'
     } else {
       css += `#${name}{\n`
       css += `width:100%;\n`
-      css += `position:absolute;\n`
+      css += `position:relative;\n`
+      //css += `left:${item.absoluteBoundingBox.x + 500}px;\n`
+      //css += `top:${item.absoluteBoundingBox.y}px;\n`
       css += '}\n\n'
     }
   }
@@ -128,7 +123,18 @@ const cssBuild = (item, name) => {
     css += `line-height: ${item.style.lineHeightPx}px;\n`
     css += '}\n\n'
   }
-
+  /*   if (
+    item.absoluteBoundingBox != null &&
+    item.absoluteBoundingBox != undefined
+  ) {
+    css += `#${name}{\n`
+    css += `width:${item.absoluteBoundingBox.width}px;\n`
+    css += `height:${item.absoluteBoundingBox.height}px;\n`
+    css += `position:relative;\n`
+    //css += `left:${item.absoluteBoundingBox.x + 500}px;\n`
+    css += `top:${item.absoluteBoundingBox.y}px;\n`
+    css += '}\n\n'
+  } */
   if (
     item.background != null &&
     item.background != undefined &&

@@ -6,13 +6,11 @@ var position = []
 var index = 1
 var css = ''
 var widthArr = []
-var width = 1920
+var width = 1366 //display width
 var x = [0]
 var y = [0]
 var xposition = 0
 var yposition = 0
-var xValue = 0
-var yValue = 0
 
 axios
   .get('https://api.figma.com/v1/files/DF6yeqypHUu3cSGeupWzVx', {

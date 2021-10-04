@@ -16,7 +16,7 @@ axios
   })
   .then((res) => {
     changeName(res.data.document, index)
-    console.log(arr)
+    //console.log(arr)
     htmlTags += `</body >`
     console.log(htmlTags)
   })
